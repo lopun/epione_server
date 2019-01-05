@@ -13,19 +13,29 @@ module.exports = function(app, User) {
 
     let foundUser = await User.findOne({ email: resultJson.email });
 
+    console.log(foundUser.password, resultJson.password);
+
     if (foundUser) {
-      if ((foundUser.password = resultJson.password)) {
+      if (foundUser.password === resultJson.password) {
         res.json({
           ok: true,
+          error: null,
           id: foundUser.id
         });
+      } else {
+        res.json({
+          ok: false,
+          error: "Password is wrong!",
+          id: null
+        });
       }
-      return;
+    } else {
+      res.json({
+        ok: false,
+        error: "User does not exist.",
+        id: null
+      });
     }
-    res.json({
-      ok: false,
-      id: null
-    });
   });
 
   app.post("/signup", async (req, res) => {
